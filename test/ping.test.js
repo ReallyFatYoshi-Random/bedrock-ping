@@ -1,5 +1,4 @@
 #!/env/bin node
-
 const axios = require('axios');
 
 it('Valid server ping.', async () => {
