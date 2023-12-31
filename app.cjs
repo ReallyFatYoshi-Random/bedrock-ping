@@ -2,7 +2,7 @@
 const { rateLimit } = require('express-rate-limit');
 const express = require('express');
 const cors = require('cors');
-const { Client } = require('raknet-native');
+const { Client } = require('jsp-raknet');
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -25,11 +25,8 @@ app.all('/api/ping', (req, res) => {
     const { hostname, port = 19132 } = req.query;
     const client = new Client(hostname, port);
 
-    client.ping();
-
-    client.once('pong', (evd) => {
-      const args = evd.extra.toString().split(';');
-
+    client.ping((evd) => {
+      const args = evd.split(';');
       res.json({
         version: args[3] ?? 'unknown',
         bedrockProtocolVersion: args[2] ?? 'unknown',
@@ -39,6 +36,7 @@ app.all('/api/ping', (req, res) => {
         serverSoftware: args[7] ?? 'unknown',
         defaultGamemode: args[8] ?? 'unknown',
       });
+      client.close();
     });
   } catch {
     res.status(400).json({ error: 'Bad request!' });
