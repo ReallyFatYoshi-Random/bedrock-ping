@@ -1,9 +1,8 @@
+> [!NOTE]
+> To run this application you'll need NodeJS, Git and NPMJS installed on your machine.
+
 # Bedrock Ping 🏓
-
 An open source minecraft bedrock server pinger api.
-
-> NOTE:
-> You need NodeJS version 1.16.X or higher to run this application.
 
 ## Run project locally
 Open your terminal.

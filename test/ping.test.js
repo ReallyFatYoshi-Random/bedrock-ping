@@ -1,14 +1,15 @@
 #!/env/bin node
-const axios = require('axios');
+const supertest = require('supertest');
+const app = require('../app.js');
 
-it('Valid server ping.', async () => {
-  await axios.default
-    .get('http://localhost:8000/api/ping?hostname=play.pokebedrock.com')
-    .then((res) => expect(res.status).toBe(200));
-});
+const request = supertest(app);
 
-it('Invalid server ping.', async () => {
-  await axios
-    .all('http://localhost:8000/api/ping?hostname=com')
-    .catch((res) => expect(res.status).toBe(400));
+describe('[GET] /api/ping', () => {
+  it('Valid server ping.', async () => {
+    return request.get('/api/ping?hostname=play.pokebedrock.com').expect(200);
+  });
+
+  it('Invalid server ping.', async () => {
+    return request.get('/api/ping?hostname=example').expect(400);
+  });
 });

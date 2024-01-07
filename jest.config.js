@@ -1,1 +1,1 @@
-export default { transform: {} };
+module.exports =  { transform: {} };
