@@ -1,13 +1,12 @@
 #!/env/bin node
+const dns = require('node:dns/promises');
+
 const { rateLimit } = require('express-rate-limit');
 const express = require('express');
 const cors = require('cors');
 const { Client } = require('jsp-raknet');
 
-const PORT = process.env.PORT || 8000;
 const app = express();
-
-require('dotenv').config();
 
 app.use(express.json());
 app.use(cors());
@@ -20,13 +19,18 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.all('/api/ping', (req, res) => {
+app.all('/api/ping', async (req, res) => {
   try {
     const { hostname, port = 19132 } = req.query;
+
+    // Validates hostnames
+    await dns.lookup(hostname, 4);
+
     const client = new Client(hostname, port);
 
     client.ping((evd) => {
       const args = evd.split(';');
+
       res.json({
         version: args[3] ?? 'unknown',
         bedrockProtocolVersion: args[2] ?? 'unknown',
@@ -36,6 +40,7 @@ app.all('/api/ping', (req, res) => {
         serverSoftware: args[7] ?? 'unknown',
         defaultGamemode: args[8] ?? 'unknown',
       });
+
       client.close();
     });
   } catch {
@@ -46,7 +51,5 @@ app.all('/api/ping', (req, res) => {
 app.all('/*', (_, res) => {
   res.redirect('https://github.com/ReallyFatYoshi-Random/bedrock-ping');
 });
-
-app.listen(PORT, () => console.log('Listening on http://localhost:%s', PORT));
 
 module.exports = app;
