@@ -1,4 +1,3 @@
-#!/env/bin node
 const supertest = require('supertest');
 const app = require('../app.js');
 

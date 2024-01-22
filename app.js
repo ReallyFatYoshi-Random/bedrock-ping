@@ -1,4 +1,3 @@
-#!/env/bin node
 const dns = require('node:dns/promises');
 
 const { rateLimit } = require('express-rate-limit');
@@ -23,7 +22,7 @@ app.all('/api/ping', async (req, res) => {
   try {
     const { hostname, port = 19132 } = req.query;
 
-    // Validates hostnames
+    // Validates hostname
     await dns.lookup(hostname, 4);
 
     const client = new Client(hostname, port);
